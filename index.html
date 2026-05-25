@@ -2,27 +2,32 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Robux Donate</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="box">
+
   <h1>Robux Donate</h1>
 
-  <input type="text" id="username" placeholder="로블록스 닉네임">
+  <input
+    type="text"
+    id="username"
+    placeholder="로블록스 닉네임">
 
-  <button onclick="generateCode()">인증 문장 만들기</button>
+  <button onclick="createProfile()">
+    프로필 생성
+  </button>
 
-  <p id="code"></p>
+  <div id="profile"></div>
 
-  <button onclick="verify()">인증 완료</button>
-
-  <button onclick="logout()">로그아웃</button>
-
-  <p id="status"></p>
 </div>
 
 <script src="script.js"></script>
+
 </body>
 </html>
