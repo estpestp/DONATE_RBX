@@ -1,5 +1,7 @@
 async function loadProfile(){
 
+  const userId = 10508295877;
+
   const username = "Rivals_ruerue";
 
   const profile =
@@ -7,29 +9,7 @@ async function loadProfile(){
 
   try{
 
-    // 유저 ID 가져오기
-    const userRes = await fetch(
-      "https://users.roblox.com/v1/usernames/users",
-      {
-        method:"POST",
-
-        headers:{
-          "Content-Type":"application/json"
-        },
-
-        body:JSON.stringify({
-          usernames:[username]
-        })
-      }
-    );
-
-    const userData =
-      await userRes.json();
-
-    const userId =
-      userData.data[0].id;
-
-    // 아바타
+    // 아바타 가져오기
     const thumbRes = await fetch(
       `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`
     );
@@ -40,9 +20,9 @@ async function loadProfile(){
     const avatar =
       thumbData.data[0].imageUrl;
 
-    // 게임 가져오기
+    // 유저 게임 가져오기
     const gamesRes = await fetch(
-      `https://games.roblox.com/v2/users/${userId}/games?accessFilter=Public&limit=10&sortOrder=Asc`
+      `https://games.roblox.com/v2/users/${userId}/games?accessFilter=Public&limit=50&sortOrder=Asc`
     );
 
     const gamesData =
@@ -50,12 +30,13 @@ async function loadProfile(){
 
     let passesHTML = "";
 
+    // 게임패스 가져오기
     for(const game of gamesData.data){
 
       try{
 
         const passRes = await fetch(
-          `https://games.roblox.com/v1/games/${game.id}/game-passes?limit=10&sortOrder=Asc`
+          `https://games.roblox.com/v1/games/${game.id}/game-passes?limit=50&sortOrder=Asc`
         );
 
         const passData =
@@ -72,7 +53,9 @@ async function loadProfile(){
 
               <h3>${pass.name}</h3>
 
-              <p>${pass.price || "Offsale"} Robux</p>
+              <p>
+                ${pass.price || "Offsale"} Robux
+              </p>
 
               <a
                 href="https://www.roblox.com/game-pass/${pass.id}"
@@ -99,6 +82,8 @@ async function loadProfile(){
         class="avatar">
 
       <h2>${username}</h2>
+
+      <p>ID: ${userId}</p>
 
       ${passesHTML || "게임패스 없음"}
 
