@@ -1,61 +1,28 @@
-async function loadProfile(){
+const profile =
+document.getElementById("profile");
 
-  const userId = 10508295877;
+profile.innerHTML = `
 
-  const username = "Rivals_ruerue";
+  <img
+    src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-310A5D1E4C8A2B0B2A4E3A1A7A8E7E8C-Png/150/150/AvatarHeadshot/Png/noFilter"
+    class="avatar">
 
-  const profile =
-    document.getElementById("profile");
+  <h2>Rivals_ruerue</h2>
 
-  try{
+  <p>ID: 10508295877</p>
 
-    // 아바타 가져오기
-    const thumbRes = await fetch(
-      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`
-    );
+  <div class="pass">
 
-    const thumbData =
-      await thumbRes.json();
+    <h3>기부하기</h3>
 
-    const avatar =
-      thumbData.data[0].imageUrl;
+    <a
+      href="https://www.roblox.com/users/10508295877/profile"
+      target="_blank">
 
-    // 프로필 출력
-    profile.innerHTML = `
+      프로필 가기
 
-      <img
-        src="${avatar}"
-        class="avatar">
+    </a>
 
-      <h2>${username}</h2>
+  </div>
 
-      <p>ID: ${userId}</p>
-
-      <div class="pass">
-
-        <h3>5 Robux 기부</h3>
-
-        <a
-          href="https://www.roblox.com/users/${userId}/profile"
-          target="_blank">
-
-          프로필 가기
-
-        </a>
-
-      </div>
-
-    `;
-
-  }catch(err){
-
-    console.error(err);
-
-    profile.innerHTML =
-      "오류 발생";
-
-  }
-
-}
-
-loadProfile();
+`;
