@@ -1,33 +1,79 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
   <title>Robux Donate</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css">
+
 </head>
 
 <body>
 
-<div class="box">
+  <div class="container">
 
-  <h1>Robux Donate</h1>
+    <!-- 내 프로필 -->
 
-  <input
-    type="text"
-    id="username"
-    placeholder="로블록스 닉네임">
+    <div class="box">
 
-  <button onclick="createProfile()">
-    프로필 생성
-  </button>
+      <h1>내 프로필</h1>
 
-  <div id="profile"></div>
+      <input
+        type="text"
+        id="username"
+        placeholder="로블록스 닉네임">
 
-</div>
+      <button onclick="createProfile()">
+        프로필 생성
+      </button>
 
-<script src="script.js"></script>
+      <div id="profile"></div>
+
+    </div>
+
+    <!-- 다른 사람들 -->
+
+    <div class="box">
+
+      <h1>다른 유저</h1>
+
+      <div id="otherUsers">
+
+        <div class="user-card">
+
+          <img
+            src="https://tr.rbxcdn.com/30DAY-AvatarHeadshot-310A5D1E4C8A2B0B2A4E3A1A7A8E7E8C-Png/150/150/AvatarHeadshot/Png/noFilter"
+            class="avatar">
+
+          <h2>Builderman</h2>
+
+          <a
+            href="https://www.roblox.com/users/156/profile"
+            target="_blank">
+
+            프로필 보기
+
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
 
 </body>
+
 </html>
