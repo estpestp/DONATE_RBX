@@ -1,24 +1,13 @@
-async function createProfile(){
+async function loadProfile(){
 
-  const user =
-    document.getElementById("username").value;
+  const username = "Rivals_ruerue";
 
   const profile =
     document.getElementById("profile");
 
-  if(!user){
-
-    alert("닉네임 입력");
-
-    return;
-  }
-
-  profile.innerHTML =
-    "불러오는 중...";
-
   try{
 
-    // 닉네임 -> 유저 ID
+    // 유저 ID 가져오기
     const userRes = await fetch(
       "https://users.roblox.com/v1/usernames/users",
       {
@@ -29,7 +18,7 @@ async function createProfile(){
         },
 
         body:JSON.stringify({
-          usernames:[user]
+          usernames:[username]
         })
       }
     );
@@ -37,21 +26,10 @@ async function createProfile(){
     const userData =
       await userRes.json();
 
-    if(
-      !userData.data ||
-      !userData.data.length
-    ){
-
-      profile.innerHTML =
-        "유저 없음";
-
-      return;
-    }
-
     const userId =
       userData.data[0].id;
 
-    // 프로필 사진
+    // 아바타
     const thumbRes = await fetch(
       `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`
     );
@@ -62,7 +40,7 @@ async function createProfile(){
     const avatar =
       thumbData.data[0].imageUrl;
 
-    // 유저 게임 가져오기
+    // 게임 가져오기
     const gamesRes = await fetch(
       `https://games.roblox.com/v2/users/${userId}/games?accessFilter=Public&limit=10&sortOrder=Asc`
     );
@@ -72,7 +50,6 @@ async function createProfile(){
 
     let passesHTML = "";
 
-    // 게임별 게임패스 가져오기
     for(const game of gamesData.data){
 
       try{
@@ -91,11 +68,7 @@ async function createProfile(){
             <div class="pass">
 
               <img
-                src="${pass.iconImageAssetId
-                  ? `https://www.roblox.com/asset-thumbnail/image?assetId=${pass.iconImageAssetId}&width=150&height=150&format=png`
-                  : ""}"
-
-                class="pass-img">
+                src="https://www.roblox.com/asset-thumbnail/image?assetId=${pass.iconImageAssetId}&width=150&height=150&format=png">
 
               <h3>${pass.name}</h3>
 
@@ -121,19 +94,11 @@ async function createProfile(){
 
     profile.innerHTML = `
 
-      <div class="profile-card">
+      <img
+        src="${avatar}"
+        class="avatar">
 
-        <img
-          src="${avatar}"
-          class="avatar">
-
-        <h2>${user}</h2>
-
-        <p>ID: ${userId}</p>
-
-      </div>
-
-      <h2>게임패스</h2>
+      <h2>${username}</h2>
 
       ${passesHTML || "게임패스 없음"}
 
@@ -149,3 +114,5 @@ async function createProfile(){
   }
 
 }
+
+loadProfile();
