@@ -3,20 +3,19 @@ async function createProfile(){
   const user =
     document.getElementById("username").value;
 
+  const profile =
+    document.getElementById("profile");
+
   if(!user){
     alert("닉네임 입력");
     return;
   }
 
-  const profile =
-    document.getElementById("profile");
-
-  profile.innerHTML =
-    "불러오는 중...";
+  profile.innerHTML = "불러오는 중...";
 
   try{
 
-    // 닉네임 -> 유저 ID
+    // 유저 찾기
     const userRes = await fetch(
       "https://users.roblox.com/v1/usernames/users",
       {
@@ -30,14 +29,11 @@ async function createProfile(){
       }
     );
 
-    const userData =
-      await userRes.json();
+    const userData = await userRes.json();
 
-    if(!userData.data.length){
+    if(!userData.data || !userData.data.length){
 
-      profile.innerHTML =
-        "유저 없음";
-
+      profile.innerHTML = "유저 없음";
       return;
     }
 
@@ -52,36 +48,14 @@ async function createProfile(){
     const thumbData =
       await thumbRes.json();
 
-    const avatar =
-      thumbData.data[0].imageUrl;
+    let avatar = "";
 
-    // 유저 게임 가져오기
-    const gamesRes = await fetch(
-      `https://games.roblox.com/v2/users/${userId}/games?accessFilter=Public&limit=10&sortOrder=Asc`
-    );
-
-    const gamesData =
-      await gamesRes.json();
-
-    let gamesHTML = "";
-
-    for(const game of gamesData.data){
-
-      gamesHTML += `
-        <div class="game">
-
-          <h3>${game.name}</h3>
-
-          <a
-            href="https://www.roblox.com/games/${game.id}"
-            target="_blank">
-
-            게임 보기
-
-          </a>
-
-        </div>
-      `;
+    if(
+      thumbData.data &&
+      thumbData.data.length
+    ){
+      avatar =
+        thumbData.data[0].imageUrl;
     }
 
     profile.innerHTML = `
@@ -92,9 +66,11 @@ async function createProfile(){
 
       <h2>${user}</h2>
 
-      <h3>게임 목록</h3>
+      <p>유저 ID: ${userId}</p>
 
-      ${gamesHTML}
+      <button>
+        Donate
+      </button>
 
     `;
 
