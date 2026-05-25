@@ -27,7 +27,7 @@ function generateCode(){
     "소개에 넣기: " + verifyCode;
 }
 
-function verify(){
+async function verify(){
 
   const user =
     document.getElementById("username").value;
@@ -37,13 +37,61 @@ function verify(){
     return;
   }
 
-  localStorage.setItem("user", user);
+  try{
 
-  document.getElementById("status").innerText =
-    user + " 인증 성공!";
+    // 유저 ID 가져오기
+    const userRes = await fetch(
+      "https://users.roblox.com/v1/usernames/users",
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          usernames:[user]
+        })
+      }
+    );
+
+    const userData = await userRes.json();
+
+    if(!userData.data.length){
+      alert("유저 없음");
+      return;
+    }
+
+    const userId = userData.data[0].id;
+
+    // 소개 가져오기
+    const profileRes = await fetch(
+      `https://users.roblox.com/v1/users/${userId}`
+    );
+
+    const profileData = await profileRes.json();
+
+    const description =
+      profileData.description || "";
+
+    // 인증코드 검사
+    if(description.includes(verifyCode)){
+
+      localStorage.setItem("user", user);
+
+      document.getElementById("status").innerText =
+        user + " 인증 성공!";
+
+    }else{
+      alert("소개에 인증 문장이 없음");
+    }
+
+  }catch(err){
+    console.error(err);
+    alert("오류 발생");
+  }
 }
 
 function logout(){
+
   localStorage.removeItem("user");
 
   document.getElementById("status").innerText =
