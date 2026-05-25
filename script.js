@@ -1,15 +1,4 @@
-let verifyCode = "";
-
-window.onload = () => {
-  const savedUser = localStorage.getItem("user");
-
-  if(savedUser){
-    document.getElementById("status").innerText =
-      savedUser + " 로그인됨";
-  }
-};
-
-function generateCode(){
+async function createProfile(){
 
   const user =
     document.getElementById("username").value;
@@ -19,27 +8,15 @@ function generateCode(){
     return;
   }
 
-  verifyCode =
-    "verify_" +
-    Math.floor(Math.random()*99999);
+  const profile =
+    document.getElementById("profile");
 
-  document.getElementById("code").innerText =
-    "소개에 넣기: " + verifyCode;
-}
-
-async function verify(){
-
-  const user =
-    document.getElementById("username").value;
-
-  if(!verifyCode){
-    alert("먼저 인증 문장 생성");
-    return;
-  }
+  profile.innerHTML =
+    "불러오는 중...";
 
   try{
 
-    // 유저 ID 가져오기
+    // 닉네임 -> 유저 ID
     const userRes = await fetch(
       "https://users.roblox.com/v1/usernames/users",
       {
@@ -53,47 +30,81 @@ async function verify(){
       }
     );
 
-    const userData = await userRes.json();
+    const userData =
+      await userRes.json();
 
     if(!userData.data.length){
-      alert("유저 없음");
+
+      profile.innerHTML =
+        "유저 없음";
+
       return;
     }
 
-    const userId = userData.data[0].id;
+    const userId =
+      userData.data[0].id;
 
-    // 소개 가져오기
-    const profileRes = await fetch(
-      `https://users.roblox.com/v1/users/${userId}`
+    // 프로필 사진
+    const thumbRes = await fetch(
+      `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`
     );
 
-    const profileData = await profileRes.json();
+    const thumbData =
+      await thumbRes.json();
 
-    const description =
-      profileData.description || "";
+    const avatar =
+      thumbData.data[0].imageUrl;
 
-    // 인증코드 검사
-    if(description.includes(verifyCode)){
+    // 유저 게임 가져오기
+    const gamesRes = await fetch(
+      `https://games.roblox.com/v2/users/${userId}/games?accessFilter=Public&limit=10&sortOrder=Asc`
+    );
 
-      localStorage.setItem("user", user);
+    const gamesData =
+      await gamesRes.json();
 
-      document.getElementById("status").innerText =
-        user + " 인증 성공!";
+    let gamesHTML = "";
 
-    }else{
-      alert("소개에 인증 문장이 없음");
+    for(const game of gamesData.data){
+
+      gamesHTML += `
+        <div class="game">
+
+          <h3>${game.name}</h3>
+
+          <a
+            href="https://www.roblox.com/games/${game.id}"
+            target="_blank">
+
+            게임 보기
+
+          </a>
+
+        </div>
+      `;
     }
 
+    profile.innerHTML = `
+
+      <img
+        src="${avatar}"
+        class="avatar">
+
+      <h2>${user}</h2>
+
+      <h3>게임 목록</h3>
+
+      ${gamesHTML}
+
+    `;
+
   }catch(err){
+
     console.error(err);
-    alert("오류 발생");
+
+    profile.innerHTML =
+      "오류 발생";
+
   }
-}
 
-function logout(){
-
-  localStorage.removeItem("user");
-
-  document.getElementById("status").innerText =
-    "로그아웃됨";
 }
